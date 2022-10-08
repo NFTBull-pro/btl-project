@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <head>
+      <meta charset="utf-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+      <title>Регистрация</title>
+
+      <!-- GOOGLE FONTS -->
+      <link
+        href="https://fonts.googleapis.com/css?family=Montserrat:400,500|Poppins:400,500,600,700|Roboto:400,500"
+        rel="stylesheet"
+      />
+      <link
+        href="https://cdn.materialdesignicons.com/4.4.95/css/materialdesignicons.min.css"
+        rel="stylesheet"
+      />
+
+      <!-- PLUGINS CSS STYLE -->
+      <link
+        href="{{ url('static', filename='plugins/nprogress/nprogress.css') }}"
+        rel="stylesheet"
+      />
+
+      <!-- SLEEK CSS -->
+      <link
+        id="sleek-css"
+        rel="stylesheet"
+        href="{{ url('static', filename='css/sleek.css') }}"
+      />
+
+      <!-- FAVICON -->
+      <link
+        href="{{ url('static', filename='img/favicon.png') }}"
+        rel="shortcut icon"
+      />
+
+      <script src="{{ url('static', filename='plugins/nprogress/nprogress.js') }}"></script>
+    </head>
+  </head>
+  <body class="" id="body">
+    <div class="container d-flex flex-column justify-content-between vh-100">
+      <div class="row justify-content-center mt-5">
+        <div class="col-xl-5 col-lg-6 col-md-10">
+          <div class="card">
+            <div class="card-header bg-primary">
+              <div class="app-brand">
+                <a href="/">
+                  <span class="brand-name">BTL</span>
+                </a>
+              </div>
+            </div>
+            <div class="card-body p-5">
+              <h4 class="text-dark mb-5">Регистрация</h4>
+              {% if error %}
+              <div class="alert alert-danger" role="alert">
+                Ошибка: {{ error }}
+              </div>
+              {% endif %}
+              <form action="/register" method="POST">
+                <div class="row">
+                  <div class="form-group col-md-12 mb-4">
+                    <input
+                      type="email"
+                      class="form-control input-lg"
+                      id="email"
+                      name="email"
+                      aria-describedby="emailHelp"
+                      placeholder="Email"
+                      value="{{ form.email }}"
+                    />
+                  </div>
+                  <div class="form-group col-md-12 mb-4">
+                    <input
+                      type="text"
+                      class="form-control input-lg"
+                      id="fio"
+                      name="fio"
+                      placeholder="ФИО"
+                      value="{{ form.fio }}"
+                    />
+                  </div>
+                  <div class="form-group col-md-12 mb-4">
+                    <input
+                      type="text"
+                      class="form-control input-lg"
+                      id="username"
+                      name="username"
+                      placeholder="Логин"
+                      value="{{ form.username }}"
+                    />
+                  </div>
+                  <div class="form-group col-md-12">
+                    <input
+                      type="password"
+                      class="form-control input-lg"
+                      id="password"
+                      name="password"
+                      placeholder="Пароль"
+                    />
+                  </div>
+                  <div class="form-group col-md-12">
+                    <input
+                      type="password"
+                      class="form-control input-lg"
+                      id="cpassword"
+                      name="password2"
+                      placeholder="Повторите"
+                    />
+                  </div>
+                  <div class="col-md-12">
+                    <button
+                      type="submit"
+                      class="btn btn-lg btn-primary btn-block mb-4"
+                    >
+                      Регистрация
+                    </button>
+                    <p>
+                      Есть аккаунт?
+                      <a class="text-blue" href="/login">Вход</a>
+                    </p>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

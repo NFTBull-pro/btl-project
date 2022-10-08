@@ -1,0 +1,130 @@
+{% include 'admin-layout.html' %}
+<div class="content-wrapper">
+    <div class="content">
+        <div class="bg-white border rounded">
+            <div class="row no-gutters">
+                <div class="col-lg-4 col-xl-3">
+                    <div class="profile-content-left pt-5 pb-3 px-3 px-xl-5">
+                        <div class="card text-center widget-profile px-0 border-0">
+                            <div class="card-img mx-auto rounded-circle">
+                                <img src={%if 'photo' in tg_user%}"{{ url('static', filename=tg_user['photo']) }}"{%else%}"{{ url('static', filename='img/user/user.png') }}"{%endif%}  alt="user image" class="w-100">
+                            </div>
+                            <div class="card-body">
+                                <h4 class="py-2 text-dark">{{tg_user['name']}}</h4>
+                                <p>{{tg_user['status']}}</p>
+                            </div>
+                        </div>
+                        <hr class="w-100">
+                        <div class="contact-info pt-4">
+                            <h5 class="text-dark mb-1">Контактная информация</h5>
+                            <p class="text-dark font-weight-medium pt-4 mb-2">ФИО</p>
+                            <p>{{tg_user['FIO']}}</p>
+                            <p class="text-dark font-weight-medium pt-4 mb-2">Email</p>
+                            <p>{{tg_user['email']}}</p>
+                            <p class="text-dark font-weight-medium pt-4 mb-2">Телефон</p>
+                            <p>{{tg_user['phone']}}</p>
+                            {%if 'chat_id' not in tg_user%}
+                                <p class="text-dark font-weight-medium pt-4 mb-2">Код для регистрации</p>
+                                <p>{{tg_user['code']}}</p>
+                            {%endif%}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-xl-9">
+                    <div class="profile-content-right py-5">
+                        <ul class="nav nav-tabs px-3 px-xl-5 nav-style-border" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="settings-tab" data-toggle="tab" href="#settings" role="tab"
+                                    aria-controls="settings" aria-selected="false">Редактировать информацию</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content px-3 px-xl-5" id="myTabContent">
+                            <div class="tab-pane active" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                                <div class="mt-5">
+                                    <form method='POST' id="updateTGUser_form" enctype="multipart/form-data" onsubmit="return false;">
+                                        <input type="text" class="form-control" hidden name="status"
+                                                value="update_tg_user">
+                                        
+                                        
+                                        <div class="form-group mb-4">
+                                            <label for="FIO">ФИО</label>
+                                            <input type="text" class="form-control" name="FIO"
+                                                value="{{tg_user['FIO']}}" autocomplete="off">
+                                        </div>
+
+                                        <div class="form-group mb-4">
+                                            <label for="phone">Телефон</label>
+                                            <input type="text" class="form-control" name="phone"
+                                                value="{{tg_user['phone']}}" autocomplete="off">
+                                        </div>
+
+                                        <div class="form-group mb-4">
+                                            <label for="email">Email</label>
+                                            <input type="email" class="form-control" name="email"
+                                                value="{{tg_user['email']}}" autocomplete="off">
+                                        </div>
+
+                                        <div class="form-group mb-4">
+                                            <label for="passport">Паспортные данные</label>
+                                            <input type="text" class="form-control" name="passport"
+                                                value="{%if 'passport' in tg_user %}{{tg_user['passport']}}{%endif%}" autocomplete="off">
+                                        </div>
+
+                                        <div class="form-group mb-4">
+                                            <label for="city">Город</label>
+                                            <input type="text" class="form-control" name="city"
+                                                value="{{tg_user['city']}}" autocomplete="off">
+                                        </div>
+
+                                        <div class="form-group mb-4">
+                                            <label for="code">Код</label>
+                                            <input type="text" class="form-control" name="code"
+                                                value="{{tg_user['code']}}" disabled>
+                                        </div>
+                                        
+                                        <div class="form-group mb-4">
+                                            <label class="control control-checkbox">Активен
+                                                <input type="checkbox" name="tg_status" {%if tg_user['status'] == 'Активен'%} checked {%endif%}>
+                                                <div class="control-indicator"></div>
+                                            </label>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label for="photo" class="col-sm-12 col-lg-3 col-form-label">Изображение</label>
+                                            <div class="col-sm-12 col-lg-9">
+                                              <div class="custom-file mb-1">
+                                                <input type="file" class="custom-file-input" name="photo" accept=".jpg, .jpeg, .png">
+                                                <label class="custom-file-label" for="photo">Выберите файл...</label>
+                                                <div class="invalid-feedback">Ошибка при загрузке файла</div>
+                                              </div>
+                                            </div>
+                                        </div>
+                                        
+
+                                        <div class="form-group">
+                                            <label for="project_id">Выберите проект</label>
+                                            <select class="form-control" id="project_id" name="project_id" multiple required>
+                                                {%for project in projects%}
+                                                <option value={{project['_id']}} {%if project['_id'] | string in tg_user['projects_id'] %}selected{%endif%}>{{project['name']}}</option>
+                                                {%endfor%}
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="d-flex justify-content-end mt-5">
+                                            <button type="submit" class="btn btn-primary mb-2">Обновить
+                                                сотрудника</button>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'admin-end.html' %}
+<script src="{{ url('static', filename='js/page/tg_user_page.js') }}"></script>
+</body>
+</html>

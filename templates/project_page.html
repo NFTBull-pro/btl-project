@@ -1,0 +1,202 @@
+{% include 'admin-layout.html' %}
+<div class="content-wrapper">
+    <div class="content">
+        <div class="bg-white border rounded">
+            <div class="row no-gutters">
+                <div class="col-lg-4 col-xl-3">
+                    <div class="profile-content-left pt-5 pb-3 px-3 px-xl-5">
+                        <div class="card text-center widget-profile px-0 border-0">
+                            <div class="card-body">
+                                <h4 class="py-2 text-dark">{{project['name']}}</h4>
+                                <p>Тариф: {{project['tariff']}}</p>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-around">
+                            <div class="text-center pb-4">
+                                <h6 class="text-dark pb-2">{{project['user_count']}}</h6>
+                                <p>Сотрудников</p>
+                            </div>
+                            <div class="text-center pb-4">
+                                <h6 class="text-dark pb-2">{{project['store_count']}}</h6>
+                                <p>Сетей</p>
+                            </div>
+                        </div>
+                        <hr class="w-100">
+                        <div class="contact-info pt-4">
+                            <h5 class="text-dark mb-1">Информация о менеджерах</h5>
+                            <p class="text-dark font-weight-medium pt-4 mb-2">Количество: {{managers|length}}</p>
+                            <p class="text-dark font-weight-medium pt-4 mb-2">Email менеджеров</p>
+                            {%for manager in managers[:5]%}
+                                <p>{{manager['email']}}</p>
+                            {%endfor%}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-xl-9">
+                    <div class="profile-content-right py-5">
+                        <ul class="nav nav-tabs px-3 px-xl-5 nav-style-border" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="timeline-tab" data-toggle="tab" href="#timeline"
+                                    role="tab" aria-controls="timeline" aria-selected="true">Список сетей</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                                    aria-controls="profile" aria-selected="false">Список сотрудников</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab"
+                                    aria-controls="settings" aria-selected="false">Редактировать информацию</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content px-3 px-xl-5" id="myTabContent">
+                            <div class="tab-pane fade active show" id="timeline" role="tabpanel"
+                                aria-labelledby="timeline-tab">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="card card-table-border-none border-0" id="store-list">
+                                            <div class="card-body pt-0 pb-5">
+                                                <table class="table card-table table-responsive table-responsive-large"
+                                                    style="width:100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Название сети</th>
+                                                            <th>Количество магазинов</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for chain_store in chains_store %}
+                                                            <tr>
+                                                                <td>{{chain_store['name']}}</td>
+                                                                <td>{{chain_store['store_count']}}</td>
+                                                                <td class="text-right">
+                                                                    <div
+                                                                        class="dropdown show d-inline-block widget-dropdown">
+                                                                        <a class="dropdown-toggle icon-burger-mini" href=""
+                                                                            role="button" id="dropdown-recent-order1"
+                                                                            data-toggle="dropdown" aria-haspopup="true"
+                                                                            aria-expanded="false" data-display="static"></a>
+                                                                        <ul class="dropdown-menu dropdown-menu-right"
+                                                                            aria-labelledby="dropdown-recent-order1">
+                                                                            <li class="dropdown-item">
+                                                                                <a href="{{chain_store['chain_store_page']}}">Открыть</a>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                        
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="card card-table-border-none border-0" id="tg-user-list">
+                                            <div class="card-body pt-0 pb-5">
+                                                <table class="table card-table table-responsive table-responsive-large"
+                                                    style="width:100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>ФИО</th>
+                                                            <th>Телефон</th>
+                                                            <th>Магазин</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for tg_user in tg_users %}
+
+                                                        <tr>
+                                                            <td>{{tg_user['FIO']}}</td>
+                                                            <td>{{tg_user['phone']}}</td>
+                                                            <td>{{tg_user['store_name']}}</td>
+                                                            <td class="text-right">
+                                                                <div
+                                                                    class="dropdown show d-inline-block widget-dropdown">
+                                                                    <a class="dropdown-toggle icon-burger-mini" href=""
+                                                                        role="button" id="dropdown-recent-order1"
+                                                                        data-toggle="dropdown" aria-haspopup="true"
+                                                                        aria-expanded="false" data-display="static"></a>
+                                                                    <ul class="dropdown-menu dropdown-menu-right"
+                                                                        aria-labelledby="dropdown-recent-order1">
+                                                                        <li class="dropdown-item">
+                                                                            <a href="{{tg_user['user_page']}}">Открыть</a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                                <div class="mt-5">
+                                    <form method='POST'>
+                                        <input type="text" class="form-control" hidden name="status"
+                                                value="update_project">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Название</label>
+                                            <input type="text" class="form-control" name="name"
+                                                value="{{project['name']}}" required>
+                                        </div>
+                                        <div class="form-group mb-4">
+                                            <label for="tariff">Тариф</label>
+                                            <input type="number" class="form-control" name="tariff"
+                                                value="{{project['tariff']}}" required min="0">
+                                        </div>
+                                        <div class="form-group mb-4">
+                                            <label for="tariff_price">Цена тарифа</label>
+                                            <input type="text" class="form-control" name="tariff_price"
+                                                value="{{project['tariff_price']}}" required>
+                                        </div>
+                                        <div class="form-group mb-4">
+                                            <label for="channel">Канал в телеграмме</label>
+                                            <input type="text" class="form-control" name="channel"
+                                                value="{{project['channel']}}" placeholder="Введите ID канала">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="project_manager">Выберите менеджера</label>
+                                            <select class="form-control" id="project_manager" name="project_manager" multiple required>
+                                                {%for user in staff%}                                      
+                                                <option value={{user['_id']}} {%for manager in managers%}{%if user['_id'] in manager.values()%}selected{%endif%}{%endfor%}>{{user['FIO']}}</option>
+                                                {%endfor%}
+                                            </select>
+                                        </div>
+
+                                       
+
+                                        <div class="d-flex justify-content-end mt-5">
+                                            <button type="submit" class="btn btn-primary mb-2 mr-2">Обновить
+                                                проект</button>
+
+                                            <button onclick="deleteProject(`{{project['_id']}}`)" class="btn btn-danger mb-2">Удалить
+                                                проект</button>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'admin-end.html' %}
+<script src="{{ url('static', filename='js/page/project_page.js') }}"></script>
+</body>
+</html>

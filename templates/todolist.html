@@ -1,0 +1,312 @@
+{% include 'admin-layout.html' %}
+<div class="content-wrapper">
+    <div class="content">			
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-default">
+                  <div class="card-header "><h2>Задачи</h2></div>
+                    <div class="card-header card-header-border-bottom d-flex justify-content-between">
+                      <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                        <li class="nav-item">
+                          <a class="nav-link" id="pills-list-tab" data-toggle="pill" href="#pills-list" role="tab" aria-controls="pills-list" aria-selected="false">Список</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link active" id="pills-calendar-tab" data-toggle="pill" href="#pills-calendar" role="tab" aria-controls="pills-calendar" aria-selected="true">Календарь</a>
+                        </li>
+                      </ul>
+                      <button type="button" class="btn btn-primary"
+                              data-toggle="modal" data-target="#exampleModalForm">
+                              Добавить заметку
+                      </button>
+                      
+                    </div>
+                    <div class="tab-content"  id="pills-tabContent">
+                      <div class="card-body p-0 tab-pane fade show active" id="pills-calendar" role="tabpanel" aria-labelledby="pills-calendar-tab">
+                        <div class="full-calendar"> 
+                          <div id='calendar'></div>
+                        </div>
+                      </div>
+                      <div class="card-body tab-pane fade" id="pills-list" role="tabpanel" aria-labelledby="pills-list-tab">
+                        <div class="hoverable-data-table">
+                          <div id="hoverable-data-table_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+                              <table id="hoverable-data-table" class="table hover nowrap" style="width:100%">
+                                  <thead>
+                                   <tr>
+                                    <th>Описание</th>
+                                    <th class="d-none"></th>
+                                    <th></th>
+                                    <th>Сроки</th>
+                                    <th>Тип задачи</th>
+                                    <th>Статус</th>
+                                    <th></th>
+                                   </tr>
+                                  </thead>
+                                
+                                  <tbody>
+                                      {%for task in tasks %}
+                                      <tr>
+                                          <th>{{task['description']}}</th>
+                                          <th class="d-none">{{task['object_type']}}</th>
+                                          <th>{{task['object_description']}}</th>
+                                          <th>{{task['timing']}}</th>
+                                          {%if task['object_type'] != 6%}
+                                          <th>{%if task['is_phototask']%}Фото{%else%}Без фото{%endif%}</th>
+                                          <th>{{task['status']}}</th>
+                                          <td class="text-right">
+                                            <div
+                                                class="dropdown show d-inline-block widget-dropdown">
+                                                <a class="dropdown-toggle icon-burger-mini" href=""
+                                                    role="button" id="dropdown-recent-order1"
+                                                    data-toggle="dropdown" aria-haspopup="true"
+                                                    aria-expanded="false" data-display="static"></a>
+                                                <ul class="dropdown-menu dropdown-menu-right"
+                                                    aria-labelledby="dropdown-recent-order1">
+                                                    <li class="dropdown-item">
+                                                        <a href="/task_page/{{task['_id']}}">Открыть</a>
+                                                    </li>
+                                                    <li class="dropdown-item">
+                                                        <a onclick="updateTask({{task}})">Изменить</a>
+                                                    </li>
+                                                    <li class="dropdown-item">
+                                                        <a
+                                                        onclick="deleteTask('{{task['_id']}}')">Удалить</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                          </td>
+                                          {%else%}
+                                          <th>Заметка</th>
+                                          <th>-</th>
+                                          <td class="text-right">
+                                            <button type="button" class="btn btn-primary btn-sm" onclick="deleteTask('{{task['_id']}}')">Удалить</button>
+                                          </td>
+                                          {%endif%}
+                                          
+                                          
+                                      </tr>
+                                       {%endfor%}
+                                  </tbody>
+                                 </table>
+                                 <div>
+                                  <button type="button" class="btn btn-primary" id="btn-add-task" data-toggle="modal" data-target="#taskAddFormModal">
+                                      Добавить задачу
+                                  </button>
+                                 </div>
+                                 <!--Форма добавление задачи-->
+                                 <div class="modal fade" id="taskAddFormModal" tabindex="-1" role="dialog" aria-labelledby="taskAddFormModalTitle" aria-hidden="true" style="display: none;">
+                                  <div class="modal-dialog modal-lg" role="document">
+                                      <div class="modal-content">
+                                          <div class="modal-header">
+                                              <h5 class="modal-title" id="taskAddFormModalTitle">Добавление задачи</h5>
+                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                  <span aria-hidden="true">×</span>
+                                              </button>
+                                          </div>
+                                          <div class="modal-body">
+                                              <form method='POST' id="addTasks_form">
+                                                  
+                                                  <div class="form-group">
+                                                      <label for="description">Описание</label>
+                                                      <input type="text" class="form-control"
+                                                          name="description" placeholder="Введите описание задачи" autocomplete="off">
+                                                  </div>
+                                                  <div class="form-group">
+                                                      <label for="filterTypeTask">Привязка</label>
+                                                      <select class="form-control" id="filterTypeTask">
+                                                          <option disabled selected value> -- Выберите тип объекта -- </option>
+                                                          <option value=1>Проект</option>
+                                                          <option value=2>Торговая сеть</option>
+                                                          <option value=3>Магазин</option>
+                                                          <option value=4>Город</option>
+                                                          <option value=5>Сотрудник</option>   
+                                                      </select>
+                                                  </div>
+                                                  <div class="form-group filterProject_div filters_type d-none">
+                                                      <label for="filterProject">Проект</label>
+                                                      <select class="form-control" id="filterProject">
+                                                          <option disabled selected value> -- Выберите проект -- </option>
+                                                          {%for project in projects%}
+                                                          <option value="{{project['_id']}}">{{project['name']}}</option>
+                                                          {%endfor%}
+                                                      </select>
+                                                  </div>
+                      
+                                                  <div class="form-group filterChainStore_div filters_type d-none">
+                                                      <label for="filterChainStore">Сеть</label>
+                                                      <select class="form-control" id="filterChainStore">
+                                                          <option disabled selected value> -- Выберите сеть -- </option>
+                                                          {%for chain_store in chain_stores%}
+                                                          <option value="{{chain_store['_id']}}">{{chain_store['name']}}</option>
+                                                          {%endfor%}
+                                                      </select>
+                                                  </div>
+                      
+                                                  <div class="form-group filterStore_div filters_type d-none">
+                                                      <label for="filterStore">Магазин</label>
+                                                      <select class="form-control" id="filterStore">
+                                                          <option disabled selected value> -- Выберите магазин -- </option>
+                                                          {%for store in stores%}
+                                                          <option value="{{store['_id']}}">{{store['name']}}</option>
+                                                          {%endfor%}
+                                                      </select>
+                                                  </div>
+                      
+                                                  <div class="form-group filterTgUser_div filters_type d-none">
+                                                      <label for="filterTgUser">Сотрудник</label>
+                                                      <select class="form-control" id="filterTgUser" disabled>
+                                                          <option disabled selected value> -- Выберите сотрудника -- </option>
+                                                      </select>
+                                                  </div>
+                      
+                                                  <div class="form-group filterCity_div filters_type d-none">
+                                                      <label for="filterCity">Город</label>
+                                                      <select class="form-control" id="filterCity">
+                                                          <option disabled selected value> -- Выберите город -- </option>
+                                                          {%for city in cities%}
+                                                              <option>{{city}}</option>
+                                                          {%endfor%}
+                                                      </select>
+                                                  </div>
+  
+                                                  <div class="form-group">
+                                                      <label for="date">Сроки выполнения</label>
+                                                      <div class="input-group">
+                                                          <input type="text" name="date" class="form-control" required>
+                                                          <div class="input-group-append">
+                                                          <input type="time" name="time" class="form-control" required>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                                  <div class="form-group">
+                                                      <select class="form-control" name="is_phototask">
+                                                          <option value="0">Без загрузки фото</option>
+                                                          <option value="1">С загрузкой фото</option>
+                                                      </select>
+                                                  </div>
+                                                  <div class="form-group">
+                                                      <select class="form-control mb-1" name="repetitive">
+                                                          <option value="0">Не повторять</option>
+                                                          <option value="weekday">Каждую неделю</option>
+                                                          <option value="monthday">Каждое число месяца</option>
+                                                      </select>
+                                                      <p style="font-size: 90%">*Подтягивается с выбором срока</p>
+                                                  </div>
+
+                                                  <div class="form-group d-none" id="repetitive_end">
+                                                      <label for="date_end">Повторять до</label>
+                                                      <input type="text" name="date_end" class="form-control">
+                                                  </div>
+
+  
+                                                  <button type="submit" id="btnSubmit" class="btn btn-primary mt-4">Добавить</button>
+                                              </form>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+
+                              <!--Форма редактирования задачи-->
+                              <div class="modal fade" id="updateTaskModalForm" tabindex="-1"
+                              role="dialog" aria-labelledby="updateTaskModalFormTitle"
+                              aria-hidden="true" style="display: none;">
+                              <div class="modal-dialog modal-lg" role="document">
+                                  <div class="modal-content">
+                                      <div class="modal-header">
+                                          <h5 class="modal-title" id="updateTaskModalFormTitle">
+                                              Редактирование задачи</h5>
+                                          <button type="button" class="close" data-dismiss="modal"
+                                              aria-label="Close">
+                                              <span aria-hidden="true">×</span>
+                                          </button>
+                                      </div>
+                                      <div class="modal-body">
+                                          <form method='POST' id="updateTask_form">
+
+                                              <div class="form-group">
+                                                  <label for="description">Описание задачи</label>
+                                                  <input type="text" class="form-control"
+                                                      name="description" placeholder="Введите описание" autocomplete="off">
+                                              </div>
+
+                                              <div class="form-group">
+                                                  <label for="date">Сроки выполнения</label>
+                                                  <div class="input-group">
+                                                      <input type="text" name="date" class="form-control" required>
+                                                      <div class="input-group-append">
+                                                      <input type="time" name="time" class="form-control" required>
+                                                      </div>
+                                                  </div>
+                                              </div>
+
+                                              <div class="form-group">
+                                                  <select class="form-control" name="is_phototask">
+                                                      <option value="0">Без загрузки фото</option>
+                                                      <option value="1">С загрузкой фото</option>
+                                                  </select>
+                                              </div>
+
+                                              <button type="submit"
+                                                  class="btn btn-primary mt-4">Сохранить</button>
+                                          </form>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          </div>
+                      </div>
+                      </div>
+                    </div>
+                    
+                </div>
+                <!--Form modal 1-->
+                <div class="modal fade" id="exampleModalForm" tabindex="-1"
+                role="dialog" aria-labelledby="exampleModalFormTitle"
+                aria-hidden="true" style="display: none;">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalFormTitle">
+                                Добавление заметки</h5>
+                            <button type="button" class="close" data-dismiss="modal"
+                                aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form method='POST' id="addNote_form" action="/note_add">
+                                <input type="text" class="form-control" hidden
+                                    name="status" value="add_note">
+                                <input type="text" class="form-control" hidden
+                                    name="object_type" value="6">
+
+
+                                  <div class="form-group">
+                                      <label for="description">Заметка</label>
+                                      <input type="text" class="form-control"
+                                          name="description" placeholder="Введите текст" autocomplete="off">
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="date">Дата</label>
+                                    <input type="text" name="date" class="form-control" required>
+                                        <div class="input-group-append">
+                                  </div>
+                                
+                                <button type="submit"
+                                    class="btn btn-primary mt-2" id="btnSubmit">Добавить</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'admin-end.html' %}
+<script src="{{ url('static', filename='js/page/todolist.js') }}"></script>
+<script>
+    var tasks = {{ tasks|safe }};
+    var project_user_dict = {{project_user_dict | safe}};
+</script>
+</body>
+</html>

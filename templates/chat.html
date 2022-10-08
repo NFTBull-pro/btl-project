@@ -1,0 +1,84 @@
+{% include 'admin-layout.html' %}
+<div class="content-wrapper">
+    <div class="content">
+        <div class="card card-default mb-0">
+            <div class="row bg-white no-gutters chat">
+                <!-- левая сторона чата -->
+                <div class="col-lg-4">
+                    <div class="chat-left-side">
+                        <form class="chat-search">
+                            <input type="text" id="chat-find" class="form-control" placeholder="Поиск...">
+                        </form>
+                        <ul class="list-unstyled border-top mb-0" id="chat-left-content">
+                            {% for tg_user in tg_user_list %}
+                            <li>
+                                <a href="#chat_{{tg_user['_id']}}" class="media media-message">
+                                    <div class="media-body d-flex justify-content-between">
+                                        <div class="message-contents">
+                                            <h4 class="title">{{tg_user['FIO']}}</h4>
+                                            <p class="last-msg">{{tg_user['last_message']['text']}}</p>
+                                        </div>
+                                        <span class="date">{{tg_user['last_message']['datetime']}}</span>
+                                    </div>
+                                </a>
+                            </li>      
+                            {% endfor %}              
+                        </ul>
+                    </div>
+                </div>
+                <!-- правая сторона чата -->
+                <div class="col-lg-8">
+                    <div class="chat-right-side">
+                        
+                        <!-- Верхнее поле -->
+                        <div class="media media-chat align-items-center mb-0 media-chat-header">
+                            <div class="media-body w-100 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h3 class="heading-title mb-0" id="chat_header">Чат не открыт</h3>
+                                </div>
+                            </div>
+                        </div>
+
+                    <div class="chat-right-content" id="chat-right-content">
+                        <div class="w-100 h-100 d-none" id="spinner_loading">
+                            <div class="d-flex justify-content-center align-items-center h-100 w-100">
+                                <div class="sk-fading-circle">
+                                    <div class="sk-circle1 sk-circle"></div>
+                                    <div class="sk-circle2 sk-circle"></div>
+                                    <div class="sk-circle3 sk-circle"></div>
+                                    <div class="sk-circle4 sk-circle"></div>
+                                    <div class="sk-circle5 sk-circle"></div>
+                                    <div class="sk-circle6 sk-circle"></div>
+                                    <div class="sk-circle7 sk-circle"></div>
+                                    <div class="sk-circle8 sk-circle"></div>
+                                    <div class="sk-circle9 sk-circle"></div>
+                                    <div class="sk-circle10 sk-circle"></div>
+                                    <div class="sk-circle11 sk-circle"></div>
+                                    <div class="sk-circle12 sk-circle"></div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div>
+                            <div class="tab-content" id="myTabContent3">
+                                <div class="tab-pane pt-3 fade active show" id="telegram" role="tabpanel" aria-labelledby="telegram-tab">
+
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <form class="px-5 pb-3 d-flex" method="POST"  id="send_message_form" enctype="multipart/form-data" >
+                        <input type="text" class="form-control mb-3" name="text" placeholder="Напишите ваше сообщение..." autocomplete="off">
+                    </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'admin-end.html' %}
+<script src="{{ url('static', filename='js/page/chat.js') }}"></script>
+</body>
+</html>

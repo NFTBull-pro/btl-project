@@ -1,0 +1,89 @@
+{% include 'admin-layout.html' %}
+<div class="content-wrapper">
+  <div class="content">
+    <div class="bg-white border rounded">
+      <div class="row no-gutters">
+        <div class="col-lg-4 col-xl-3">
+          <div class="profile-content-left pt-5 pb-3 px-3 px-xl-5">
+            <div class="card text-center widget-profile px-0 border-0">
+              <div class="card-body">
+                <h4 class="py-2 text-dark">{{user['FIO']}}</h4>
+                <p>{{user['email']}}</p>
+              </div>
+            </div>
+            <hr class="w-100">
+            <div class="contact-info">
+              <p class="text-dark font-weight-medium pt-4 mb-2">Логин</p>
+              <p>{{user['username']}}</p>
+              <p class="text-dark font-weight-medium pt-4 mb-2">Номер телефона</p>
+              <p>{%if 'phone' in user %}{{user['phone']}}{%else%}Номера нет{%endif%}</p>
+              <p class="text-dark font-weight-medium pt-4 mb-2">Дата регистрации</p>
+              <p>{{user['data_joined']}}</p>
+
+              <p class="text-dark font-weight-medium pt-4 mb-2">Доступ: {%if user['is_staff']%}<span class="mdi mdi-check"></span>{%else%}<span class="mdi mdi-window-close"></span>{%endif%}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-8 col-xl-9">
+          <div class="mt-5 m-4">
+            <form method="POST" id="updateProfile_form">
+
+              <input type="text" hidden class="form-control" name="username" value="{{user['username']}}">
+
+              <input type="text" hidden class="form-control" name="status" value="change_info">
+
+              <div class="form-group mb-4">
+                <label for="FIO">ФИО</label>
+                <input type="text" class="form-control" id="FIO" name="FIO" value="{{user['FIO']}}">
+              </div>
+
+              <div class="form-group mb-4">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" value="{{user['email']}}">
+              </div>
+
+              <div class="form-group mb-4">
+                <label for="phone">Телефон</label>
+                <input type="phone" class="form-control" id="phone" name="phone"
+                  value="{%if 'phone' in user %}{{user['phone']}}{%endif%}">
+              </div>
+
+              <div class="d-flex justify-content-end mt-5">
+                <button type="submit" class="btn btn-primary mb-2">Обновить профиль</button>
+              </div>
+
+            </form>
+            <p class="text-dark font-weight-medium pt-4">Изменить пароль:</p>
+            <hr class="w-100">
+
+            <form method="POST" id="changePassword_form">
+
+              <input type="text" hidden class="form-control" name="username" value="{{user['username']}}">
+
+              <input type="text" hidden class="form-control" name="status" value="change_password">
+
+              <div class="form-group mb-4">
+                <label for="password">Старый пароль</label>
+                <input type="password" class="form-control" id="password" name="password">
+              </div>
+
+              <div class="form-group mb-4">
+                <label for="phone">Новый пароль</label>
+                <input type="password" class="form-control" id="password1" name="password1">
+              </div>
+
+              <div class="d-flex justify-content-end mt-5">
+                <button type="submit" class="btn btn-primary mb-2">Изменить пароль</button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% include 'admin-end.html' %}
+<script src="{{ url('static', filename='js/page/admin_profile_page.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+{% include 'admin-layout.html' %}
+<div class="content-wrapper">
+    <div class="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-default">
+                    <div class="card-header card-header-border-bottom d-flex justify-content-between">
+                        <h2>Отчет по сотрудникам</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="hoverable-data-table">
+                            <div id="hoverable-data-table_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+                                <table id="hoverable-data-table" class="table hover nowrap" style="width:100%">
+                                    <thead>
+                                     <tr>
+                                      <th>ФИО</th>
+                                      <th>Телефон</th>
+                                      <th>
+                                        <select class="form-control filter_tr" id="filterProject">
+                                            <option value="">Проект</option>
+                                            {%for project in projects%}
+                                            <option>{{project['name']}}</option>
+                                            {%endfor%}
+                                        </select>
+                                      </th>
+                                      <th>
+                                        <select class="form-control filter_tr" id="filterCity">
+                                            <option value="">Город</option>
+                                            {%for city in cites%}
+                                            <option>{{city}}</option>
+                                            {%endfor%}
+                                        </select>
+                                      </th>
+                                      <th>
+                                        <select class="form-control filter_tr" id="filterChain">
+                                            <option value="">Сеть</option>
+                                            {%for store in chain_store%}
+                                            <option>{{store['name']}}</option>
+                                            {%endfor%}
+                                        </select>
+                                      </th>
+                                      <th>
+                                        <select class="form-control filter_tr" id="filterStore">
+                                            <option value="">Магазин</option>
+                                            {%for store in stores%}
+                                            <option>{{store['name']}}</option>
+                                            {%endfor%}
+                                        </select>
+                                      </th>
+                                      <th>Задачи</th>
+                                      <th>График работы</th>
+                                     </tr>
+                                    </thead>
+                                  
+                                    <tbody>
+                                        {%for tg_user in tg_users %}
+                                        <tr data-tgUserId={{tg_user['_id']}} onclick="window.open(window.location.href+'/{{tg_user['_id']}}', '_self')">
+                                            <th>{{tg_user['FIO']}}</th>
+                                            <th>{{tg_user['phone']}}</th>
+                                            <th>{{tg_user['project_name']}}</th>
+                                            <th>{{tg_user['city']}}</th>
+                                            <th>{{tg_user['chain_store_name']}}</th>
+                                            <th>{{tg_user['store_name']}}</th>
+                                            <th data-status="task_stat">{{tg_user['task_stat']}}</th>
+                                            <th data-status="schedule_stat">{{tg_user['schedule_stat']}}</th>
+                                        </tr>
+                                         {%endfor%}
+                                    </tbody>
+                                   </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'admin-end.html' %}
+<script src="{{ url('static', filename='js/page/reports.js') }}"></script>
+</body>
+</html>

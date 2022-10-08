@@ -1,0 +1,234 @@
+{% include 'admin-layout.html' %}
+<div class="content-wrapper">
+    <div class="content">			
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-default">
+                    <div class="card-header card-header-border-bottom d-flex justify-content-between">
+                        <h2>График работы</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="hoverable-data-table">
+                            <div id="hoverable-data-table_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+                                <table id="hoverable-data-table" class="table hover nowrap" style="width:100%;table-layout:fixed;">
+                                    <thead>
+                                     <tr>
+                                      <th> 
+                                        <select class="form-control filter_tr" id="filterProject">
+                                            <option value="">Проект</option>
+                                            {%for project in projects%}
+                                            <option>{{project['name']}}</option>
+                                            {%endfor%}
+                                        </select>
+                                      </th>
+                                      <th>
+                                        <select class="form-control filter_tr" id="filterChain">
+                                            <option value="">Сеть</option>
+                                            {%for store in chain_store%}
+                                            <option>{{store['name']}}</option>
+                                            {%endfor%}
+                                        </select>
+                                      </th>
+                                      <th>
+                                        <select class="form-control filter_tr" id="filterCity">
+                                            <option value="">Город</option>
+                                            {%for city in cites%}
+                                            <option>{{city}}</option>
+                                            {%endfor%}
+                                        </select>
+                                      </th>
+                                      <th style="width: 250px !important;">Адресс ТТ</th>
+                                      <th>ФИО</th>
+                                      <th></th>
+                                      {% for info in month %}
+                                        {%for key, value in info.items()%}
+                                            <th>{{value}}</th>
+                                        {%endfor%}
+                                      {% endfor %}
+                                      <th></th>
+                                     </tr>
+                                    </thead>
+                                    <tbody id="schedule_table_tbody">
+                                        {% for user in tg_users %}
+                                        {%for store in user['stores']%}
+                                            <tr valign="middle">
+                                                <th>{{user['project_title']}}</th>
+                                                <th>{{store['chain_store_name']}}</th>
+                                                <th>{{store['city']}}</th>
+                                                <th style="white-space: normal;">{{store['address']}}</th>
+                                                <th>{{user['FIO']}}</th>
+                                                <th class="input_th"> 
+                                                    <div class="d-flex"><input type="text" class="form-control" value="plan" disabled></div>
+                                                    <div class="d-flex"><input type="text" class="form-control" value="fact" disabled></div>                             
+                                                </th>
+                                                {%for info in month %}
+                                                {%for key, value in info.items()%}
+                                                <th class="input_th"> 
+                                                    {%if user['_id'] in schedule%}
+
+                                                        {%if key in schedule[user['_id']][store['_id']]['plan']%}
+                                                        <div class="d-flex" data-storeId={{store['_id']}}><input type="text" data-timekey="start_time" data-id={{user['_id']}} data-day={{key}} data-status="plan" class="form-control schedule_time_input" value="{{schedule[user['_id']][store['_id']]['plan'][key]['start_time']}}"> <input type="text" data-timekey="end_time" class="form-control schedule_time_input"  data-id={{user['_id']}} data-day={{key}} data-status="plan" value="{{schedule[user['_id']][store['_id']]['plan'][key]['end_time']}}"></div>
+                                                        {%else%}
+                                                        <div class="d-flex" data-storeId={{store['_id']}}><input type="text" data-timekey="start_time" data-id={{user['_id']}} data-day={{key}} data-status="plan" class="form-control schedule_time_input"> <input type="text" data-timekey="end_time" data-id={{user['_id']}} data-day={{key}} data-status="plan" class="form-control schedule_time_input"></div>
+                                                        {%endif%}
+
+                                                        {%if 'real' in schedule[user['_id']][store['_id']]%}
+                                                            {%if key in schedule[user['_id']][store['_id']]['real']%}
+                                                            <div class="d-flex" data-storeId={{store['_id']}}><input type="text" data-timekey="start_time"  data-id={{user['_id']}} data-day={{key}} data-status="real" class="form-control schedule_time_input {%if schedule[user['_id']][store['_id']]['real'][key]['start_late']%}schedule_time_item_red{%endif%}" value="{{schedule[user['_id']][store['_id']]['real'][key]['start_time']}}" disabled> 
+                                                            {%if 'end_time' in schedule[user['_id']][store['_id']]['real'][key]%}
+                                                            <input type="text" data-timekey="end_time" data-id={{user['_id']}} data-day={{key}} data-status="real" class="form-control schedule_time_input {%if schedule[user['_id']][store['_id']]['real'][key]['end_late']%}schedule_time_item_red{%endif%}" value="{{schedule[user['_id']][store['_id']]['real'][key]['end_time']}}" disabled></div>                             
+                                                            {%else%}
+                                                            <input type="text" data-timekey="end_time" data-id={{user['_id']}} data-day={{key}} data-status="real" class="form-control schedule_time_input {%if schedule[user['_id']][store['_id']]['real'][key]['end_late']%}schedule_time_item_red{%endif%}" disabled></div>                             
+                                                            {%endif%}
+                                                            {% else %} 
+                                                            <div class="d-flex" data-storeId={{store['_id']}}><input type="text" data-timekey="start_time" data-id={{user['_id']}} data-day={{key}} data-status="real" class="form-control schedule_time_input {%if 'real' in schedule[user['_id']][store['_id']]%}{%if key in schedule[user['_id']][store['_id']]['real']%}{%if schedule[user['_id']][store['_id']]['real'][key]['start_late']%}schedule_time_item_red{%endif%}{%endif%}{%endif%}" disabled> <input type="text" data-timekey="end_time" data-id={{user['_id']}} data-day={{key}} data-status="real" class="form-control schedule_time_input" disabled></div>                                                                            
+                                                            {%endif%}
+                                                        {% else %}
+                                                        <div class="d-flex" data-storeId={{store['_id']}}><input type="text" data-timekey="start_time" data-id={{user['_id']}} data-day={{key}} data-status="real" class="form-control schedule_time_input  {%if 'real' in schedule[user['_id']][store['_id']]%}{%if key in schedule[user['_id']][store['_id']]['real']%}{%if schedule[user['_id']][store['_id']]['real'][key]['start_late']%}schedule_time_item_red{%endif%}{%endif%}{%endif%}" disabled> <input type="text" data-timekey="end_time" data-id={{user['_id']}} data-day={{key}} data-status="real"  class="form-control schedule_time_input" disabled></div>                            
+                                                        {%endif%}
+
+                                                    {% else %}
+                                                    <div class="d-flex" data-storeId={{store['_id']}}><input type="text" data-timekey="start_time" data-id={{user['_id']}} data-day={{key}} data-status="plan"  class="form-control schedule_time_input  {%if 'real' in schedule[user['_id']][store['_id']]%}{%if key in schedule[user['_id']][store['_id']]['real']%}{%if schedule[user['_id']][store['_id']]['real'][key]['start_late']%}schedule_time_item_red{%endif%}{%endif%}{%endif%}"> <input type="text" data-timekey="end_time" data-id={{user['_id']}} data-day={{key}} data-status="plan"  class="form-control schedule_time_input"></div>
+                                                    <div class="d-flex" data-storeId={{store['_id']}}><input type="text" data-timekey="start_time" data-id={{user['_id']}} data-day={{key}} data-status="real" class="form-control schedule_time_input  {%if 'real' in schedule[user['_id']][store['_id']]%}{%if key in schedule[user['_id']][store['_id']]['real']%}{%if schedule[user['_id']][store['_id']]['real'][key]['start_late']%}schedule_time_item_red{%endif%}{%endif%}{%endif%}" disabled> <input type="text" data-timekey="end_time" data-id={{user['_id']}} data-day={{key}} data-status="real" class="form-control schedule_time_input" disabled></div>                            
+                                                    {% endif %}
+                                                </th>
+                                                {%endfor%}
+                                                {%endfor%}
+                                                <th>
+                                                    <button class="btn" onclick="deleteSchedule(`{{user['_id']}}`, `{{store['_id']}}`)"><span class="mdi mdi-trash-can"></span></button>
+                                                </th>
+                                            </tr>
+                                        {% endfor %}
+                                        {% endfor %}
+                                    </tbody>
+                                   </table>
+                            </div>
+                        </div>
+                        <div class="d-flex">
+                        <!-- Кнопка для выдачи таблицы -->
+                        <div>
+                            <button type="button" class="btn btn-primary mr-2"
+                                data-toggle="modal" data-target="#uploadTable">
+                                Загрузить таблицу
+                            </button>
+                        </div>
+                        <!-- Кнопка для загрузки таблицы -->
+                        <!-- <label class="btn btn-primary btn-default mr-2">
+                            Загрузить таблицу <input type="file" name="table_file" accept=".xls, .xlsx"  hidden>
+                        </label> -->
+                        <div>
+                            <button type="button" class="btn btn-primary"
+                                data-toggle="modal" data-target="#exampleModalForm">
+                                Добавить график
+                            </button>
+                        </div>
+                        </div>
+                        <!--Form modal 1-->
+                        <div class="modal fade" id="exampleModalForm" tabindex="-1"
+                            role="dialog" aria-labelledby="exampleModalFormTitle"
+                            aria-hidden="true" style="display: none;">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalFormTitle">
+                                            Добавление графика</h5>
+                                        <button type="button" class="close" data-dismiss="modal"
+                                            aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form method='POST' id="addStore_form" action="/schedule_add">
+                                            <input type="text" class="form-control" hidden
+                                                name="status" value="add_schedule">
+
+                                            <div class="form-group">
+                                                <label for="project_id">Выберите проект</label>
+                                                <select class="form-control" name="project_id" required>
+                                                    <option disabled selected value> -- Выберите проект -- </option>
+                                                    {%for project in projects%}
+                                                        
+                                                        <option value="{{project['_id']}}">{{project['name']}}</option>
+                                                                                  
+                                                    {%endfor%}
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="chain_store_id">Выберите сеть</label>
+                                                <select class="form-control" name="chain_store_id" disabled required>
+                                                    <option disabled selected value> -- Выберите сеть -- </option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="store_id">Выберите магазин</label>
+                                                <select class="form-control" name="store_id" disabled required>
+                                                    <option disabled selected value> -- Выберите магазин -- </option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="tg_user_id">Выберите сотрудника</label>
+                                                <select class="form-control" name="tg_user_id">
+                                                    <option disabled selected value> -- Выберите сотрудника -- </option>
+                                                </select>
+                                            </div>
+
+                                            <button type="submit"
+                                                class="btn btn-primary" id="btnSubmit">Добавить</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Form modal 2-->
+                        <div class="modal fade" id="uploadTable" tabindex="-1"
+                            role="dialog" aria-labelledby="uploadTableTitle"
+                            aria-hidden="true" style="display: none;">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="uploadTableTitle">
+                                            Загрузка графика</h5>
+                                        <button type="button" class="close" data-dismiss="modal"
+                                            aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <ul class="list-group">
+                                            <li class="list-group-item list-group-item-secondary">Для загрузки таблицы: </li>
+                                            <li class="list-group-item">1) Cкачайте <a href="/download_schedule" target="_blank">актуальную таблицу</a> с адресами магазинов и прикрепленными к ним сотрудниками </li>
+                                            <li class="list-group-item">2) Добавьте для сотрудников время работы в эксель файле в формате: "XX:YY" </li>
+                                            <li class="list-group-item">3) Загрузите обновленный файл</li>
+                                        </ul>
+                                        
+                                    </div>
+                                    <div class="modal-footer">
+                                        <span class="d-block">Загружайте файлы xls или xlsx форматов.</span>
+                                        <label class="btn btn-primary btn-default mt-2">
+                                            Загрузить таблицу <input type="file" name="table_file" accept=".xls, .xlsx"  hidden>
+                                        </label>
+                                        
+                                      </div>
+                                </div>
+                            </div>
+                        </div>
+                      
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'admin-end.html' %}
+<script>
+    var global_chain_dict = {{chain_store_dict | safe}};
+    var global_project_dict = {{project_dict | safe}};
+    var global_user_dict = {{project_user_dict | safe}};
+</script>
+<script src="{{ url('static', filename='js/page/schedule.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+{% include 'admin-layout.html' %}
+<div class="content-wrapper">
+    <div class="content">			
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-default">
+                    <div class="card-header card-header-border-bottom d-flex justify-content-between">
+                        <h2>Проекты</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="hoverable-data-table">
+                            <div id="hoverable-data-table_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+                                <table id="hoverable-data-table" class="table hover nowrap" style="width:100%">
+                                    <thead>
+                                     <tr>
+                                      <th>Название</th>
+                                      <th>Тариф</th>
+                                      <th>Стоимость тарифа</th>
+                                      <th>Кол-во магазинов</th>
+                                      <th>Кол-во сотрудников</th>
+                                     </tr>
+                                    </thead>
+                                  
+                                    <tbody>
+                                        {%for project in projects %}
+                                        <tr onclick="window.open(window.location.href+'/{{project['_id']}}', '_self')">
+                                            <th>{{project['name']}}</th>
+                                            <th>{{project['tariff']}}</th>
+                                            <th>{{project['tariff_price']}}</th>
+                                            <th>{{project['store_count']}}</th>
+                                            <th>{{project['user_count']}}</th>
+                                        </tr>
+                                         {%endfor%}
+                                    </tbody>
+                                   </table>
+
+                                   <div>
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalForm">
+                                        Добавить проект
+                                    </button>
+                                   </div>
+                                   <!--Form modal-->
+                                   <div class="modal fade" id="exampleModalForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalFormTitle" aria-hidden="true" style="display: none;">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalFormTitle">Добавление проекта</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method='POST'>
+
+                                                    <div class="form-group">
+                                                        <label for="name">Название проекта</label>
+                                                        <input type="text" class="form-control" name="name" required placeholder="Введите название" autocomplete="off">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="tariff">Количество сотрудников</label>
+                                                        <input type="number" class="form-control" name="tariff" required placeholder="Введите тариф" autocomplete="off">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="tariff_price">Стоимость тарифа</label>
+                                                        <input type="text" class="form-control" name="tariff_price" required placeholder="Введите стоимость" autocomplete="off">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="project_manager">Выберите менеджеров</label>
+                                                        <select class="form-control" multiple id="project_manager" required name ="project_manager">
+                                                            {%for user in staff%}
+                                                            <option value={{user['_id']}}>{{user['FIO']}}</option>
+                                                            {%endfor%}
+                                                        </select>
+                                                    </div>
+
+                                                    <button type="submit" class="btn btn-primary">Добавить</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'admin-end.html' %}
+<script src="{{ url('static', filename='js/page/projects.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+mongo:
+  mongo_uri: ""
+  database: ""
+  max_pool_size: 150
+
+host: 178.62.91.203
+port: 9001
+bot_token: ""

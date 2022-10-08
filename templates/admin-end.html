@@ -1,0 +1,181 @@
+<script src="{{ url('static', filename='plugins/jquery/jquery.min.js') }}"></script>
+<script src="{{ url('static', filename='plugins/slimscrollbar/jquery.slimscroll.min.js') }}"></script>
+<script src="{{ url('static', filename='plugins/jekyll-search.min.js') }}"></script>
+
+<script src="{{ url('static', filename='plugins/charts/Chart.min.js') }}"></script>
+
+<script src="{{ url('static', filename='plugins/jvectormap/jquery-jvectormap-2.0.3.min.js') }}"></script>
+<script src="{{ url('static', filename='plugins/jvectormap/jquery-jvectormap-world-mill.js') }}"></script>
+
+<script src="{{ url('static', filename='plugins/daterangepicker/moment.min.js') }}"></script>
+<script src="{{ url('static', filename='plugins/daterangepicker/daterangepicker.js') }}"></script>
+
+<!-- DATATABLES-->
+<script src="{{ url('static', filename='plugins/data-tables/jquery.datatables.min.js') }}"></script>
+<script src="{{ url('static', filename='plugins/data-tables/datatables.bootstrap4.min.js') }}"></script>
+
+<!-- TOAST -->
+<script src="{{ url('static', filename='plugins/toast/jquery.toast.min.js') }}"></script>
+
+<!-- CALENDAR -->
+<script src="{{ url('static', filename='plugins/fullcalendar/core-4.3.1/main.min.js') }}"></script>
+<script src="{{ url('static', filename='plugins/fullcalendar/daygrid-4.3.0/main.min.js') }}"></script>
+
+<script src="{{ url('static', filename='plugins/circle-progress/circle-progress.js') }}"></script>
+
+<!-- SWEETALERT -->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<!-- TIMEPICKER -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+
+<script>
+  jQuery(document).ready(function () {
+    jQuery('input[name="dateRange"]').daterangepicker({
+      autoUpdateInput: false,
+      singleDatePicker: true,
+      locale: {
+        cancelLabel: "Clear",
+      },
+    });
+    jQuery('input[name="dateRange"]').on(
+      "apply.daterangepicker",
+      function (ev, picker) {
+        jQuery(this).val(picker.startDate.format("MM/DD/YYYY"));
+      }
+    );
+    jQuery('input[name="dateRange"]').on(
+      "cancel.daterangepicker",
+      function (ev, picker) {
+        jQuery(this).val("");
+      }
+    );
+  });
+</script>
+
+<!-- Для websockets -->
+<script>
+  const False = false;
+  const True = true;
+  function connect() {
+    var wsUri =
+      ((window.location.protocol == "https:" && "wss://") || "ws://") +
+      window.location.host +
+      "/connection_handler";
+    conn = new WebSocket(wsUri);
+    
+    conn.onmessage = websocket_callback;
+    conn.onclose = function(e) {
+        console.log('WebSocket is closed. Reconnect will be attempted in 1 second.', e.reason);
+        $.toast({
+            heading: "Потеряно соединение, восстанавливаем...",
+            showHideTransition: "fade",
+            icon: "warning",
+            position: "bottom-right",
+        });
+        setTimeout(function() {
+          connect();
+        }, 1000);
+    };
+    return conn;
+  }
+  function reload() {
+    swal({
+      title: "Обновить страницу?",
+      text: "Чтобы обновления отобразились нужна перезагрузка",
+      icon: "warning",
+      buttons: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        location.reload();
+      }
+    });
+  }
+  function ObjectId(str) {
+    return str;
+  }
+</script>
+<script>
+  $(document).ready(function () {
+    $.ajax({
+      url: "/get_notification_counter",
+      method: "POST",
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function (data, textStatus, jqXHR) {
+        if (data.notification_counter != 0) {
+          $("#notification_badge").text(data.notification_counter);
+          $("#notification_badge").removeClass("d-none");
+        }
+      },
+      error: function (jqXHR, exception) {
+        var msg = "";
+        if (jqXHR.status === 0) {
+          msg = "Сервер не отвечает";
+        } else {
+          msg = jqXHR.responseText;
+        }
+        $.toast({
+          heading: "Ошибка",
+          text: msg,
+          showHideTransition: "fade",
+          icon: "error",
+          position: "bottom-right",
+        });
+      },
+    });
+  });
+</script>
+<script>
+  var notifications = [];
+  function update_notification() {
+    conn.send(JSON.stringify({ status: "update_notification" }));
+  }
+  function del_notification(notification_id) {
+    conn.send(
+      JSON.stringify({ status: "del_notification", _id: notification_id })
+    );
+    return true;
+  }
+  function set_notification(data) {
+    let newest = [];
+    for (let index = 0; index < data.notifications.length; index++) {
+      const element = data.notifications[index];
+      let status = true;
+      for (let index1 = 0; index1 < notifications.length; index1++) {
+        const element1 = notifications[index1];
+
+        if (element.text == element1.text) {
+          status = false;
+          break;
+        }
+      }
+      if (status) {
+        newest.push(element);
+      }
+    }
+    for (let index = 0; index < newest.length; index++) {
+      const element = newest[index];
+    }
+
+    notifications = data.notifications;
+
+    if (notifications.length > 0) {
+      $(".notification_header").text(
+        `Непрочитанные уведомления: ${notifications.length}`
+      );
+      $(".notification-item").remove();
+      for (let index = 0; index < notifications.length; index++) {
+        const notification = notifications[index];
+        $(".notification_list").append(
+          `<li class="notification-item"> <a href="${notification.href}" onclick="return del_notification('${notification._id}');" ><span class="font-size-12 d-inline-block"><i class="mdi mdi-clock-outline"></i> ${notification.datetime}</span> ${notification.text}  </a> </li>`
+        );
+      }
+    }
+  }
+
+  // setInterval(update_notification, 2000);
+</script>
+
+<script src="{{ url('static', filename='js/sleek.bundle.js') }}"></script>

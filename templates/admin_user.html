@@ -1,0 +1,49 @@
+{% include 'admin-layout.html' %}
+<div class="content-wrapper">
+    <div class="content">			
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-default">
+                    <div class="card-header card-header-border-bottom d-flex justify-content-between">
+                        <h2>Зарегистрированные пользователи</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="hoverable-data-table">
+                            <div id="hoverable-data-table_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+                                <table id="hoverable-data-table" class="table hover nowrap" style="width:100%">
+                                    <thead>
+                                     <tr>
+                                      <th>Логин</th>
+                                      <th>ФИО</th>
+                                      <th>Телефон</th>
+                                      <th>E-mail</th>
+                                      <th>Менеджер</th>
+                                      <th>Администратор</th>
+                                     </tr>
+                                    </thead>
+                                  
+                                    <tbody>
+                                        {%for user in users %}
+                                        <tr onclick="window.open(window.location.href+'/{{user['username']}}','_self')">
+                                            <th>{{user['username']}}</th>
+                                            <th>{{user['FIO']}}</th>
+                                            <th>{%if 'phone' in user %}{{user['phone']}}{%else%}Номера нет{%endif%}</th>
+                                            <th>{{user['email']}}</th>
+                                            <th>{%if user['is_staff']%}<span class="mdi mdi-check"></span>{%else%}<span class="mdi mdi-window-close"></span>{%endif%}</th>
+                                            <th>{%if user['is_superuser']%}<span class="mdi mdi-check"></span>{%else%}<span class="mdi mdi-window-close"></span>{%endif%}</th>
+                                        </tr>
+                                         {%endfor%}
+                                    </tbody>
+                                   </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'admin-end.html' %}
+<script src="{{ url('static', filename='js/page/admin_user.js') }}"></script>
+</body>
+</html>

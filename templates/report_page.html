@@ -1,0 +1,105 @@
+{% include 'admin-layout.html' %}
+<div class="content-wrapper">
+    <div class="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-default p-4">
+                    <div class="media text-secondary">
+                    <img src={%if 'photo' in tg_user%}"{{ url('static', filename=tg_user['photo']) }}"{%else%}"{{ url('static', filename='img/user/user.png') }}"{%endif%} class="mr-3 img-fluid rounded avatar-image" alt="Avatar Image">
+                      <div class="media-body" onclick="location.href='/tg_users/{{tg_user['_id']}}'">
+                        <h5 class="mt-0 mb-2 text-dark">{{tg_user['FIO']}}</h5>
+                        <ul class="list-unstyled">
+                          <li class="d-flex mb-1">
+                            <i class="mdi mdi-map mr-1"></i>
+                            <span>{{tg_user['city']}}</span>
+                          </li>
+                          <li class="d-flex mb-1">
+                            <i class="mdi mdi-email mr-1"></i>
+                            <span>{{tg_user['email']}}</span>
+                          </li>
+                          <li class="d-flex mb-1">
+                            <i class="mdi mdi-phone mr-1"></i>
+                            <span>{%if 'phone' in tg_user %}{{tg_user['phone']}}{%endif%}</span>
+                          </li>
+                        </ul>
+              
+                      </div>
+                      </a>
+                      <!-- Для выбора периода -->
+                      <div><input type="text" class="form-control pull-right" id="datesearch" placeholder="Выберите перид..." autocomplete="off"></div>
+                      
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-8">
+                <div class="card card-default">
+                    <div class="card-header card-header-border-bottom d-flex justify-content-between">
+                        <h2>Отчет по задачам</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="hoverable-data-table">
+                            <div id="hoverable-data-table_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+                                <table id="hoverable-data-table" class="table hover nowrap" style="width:100%">
+                                    <thead>
+                                     <tr>
+                                      <th>Дата</th>
+                                      <th>Описание</th>
+                                      <th>Статус</th>
+                                     </tr>
+                                    </thead>
+                                  
+                                    <tbody>
+                                        {%for task in tasks %}
+                                        <tr onclick="window.open(`/task_page/{{task['_id']}}`);">
+                                            <th>{{task['timing']}}</th>
+                                            <th>{{task['description']}}</th>
+                                            <th>
+                                                {% if task['task_status'] %}
+                                                Выполнена
+                                                {% else %}
+                                                Не выполнена
+                                                {% endif %}                                      
+                                            </th>
+                                        </tr>
+                                         {%endfor%}
+                                    </tbody>
+                                   </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-4">
+                <div class="card card-default mb-4 mb-lg-5">
+                    <div class="card-header card-header-border-bottom">
+                        <h2>График работы</h2> <div class="btn btn-outline-secondary ml-2" onclick="location.href='/schedule';">Открыть</div>
+                    </div>
+
+                        <div class="card-body p-4 py-xl-6 px-xl-2">
+                            <div class="circle circle-lg"
+                                id="schedule_procents"
+                                data-size="200"
+                                data-value="{{tg_user['schedule_procents']}}"
+                                data-thickness="20"
+                                data-fill="{
+                                    &quot;color&quot;: &quot;#4c84ff&quot;
+                                }"
+                                >
+                            <div class="circle-content">
+                                <h6 class="text-uppercase text-dark font-weight-bold" id="schedule_stat">{{tg_user['schedule_stat']}}</h6>
+                                <strong></strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'admin-end.html' %}
+<script src="{{ url('static', filename='js/page/report_page.js') }}"></script>
+</body>
+</html>

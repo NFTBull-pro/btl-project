@@ -1,0 +1,41 @@
+{% include 'admin-layout.html' %}
+<div class="content-wrapper">
+    <div class="content">			
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-default">
+                    <div class="card-header card-header-border-bottom d-flex justify-content-between">
+                        <h2>Редактирование чат-бота</h2>
+                    </div>
+                    <div class="card-body">
+                        <form method='POST'>
+
+                            {% for name, value in text_info.items() %}
+                                <div class="form-group mb-4">
+                                    <label for="{{name}}">{{value}}</label>
+                                    <input type="text" class="form-control" name="{{name}}"
+                                        value="{{bot_text[loop.index-1] | replace('\n','\\n')}}" placeholder="Введите текст" autocomplete="off">
+                                </div>
+                            {%endfor%}
+                            
+                            
+                            
+
+                            <div class="d-flex justify-content-end mt-5">
+                                <button type="submit" class="btn btn-primary mb-2l">Обновить
+                                    текста</button>
+                            </div>
+
+                        </form>
+                    </div>
+                      
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'admin-end.html' %}
+<script src="{{ url('static', filename='js/page/bot_text.js') }}"></script>
+</body>
+</html>

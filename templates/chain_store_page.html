@@ -1,0 +1,219 @@
+{% include 'admin-layout.html' %}
+<div class="content-wrapper">
+    <div class="content">
+        <div class="bg-white border rounded">
+            <div class="row no-gutters">
+                <div class="col-lg-4 col-xl-3">
+                    <div class="profile-content-left pt-5 pb-3 px-3 px-xl-5">
+                        <div class="card text-center widget-profile px-0 border-0">
+                            <div class="card-body">
+                                <h4 class="py-2 text-dark">{{chain_store['name']}}</h4>
+                                <p>Магазинов: {{chain_store['store_count']}}</p>
+                            </div>
+                        </div>
+                        <hr class="w-100">
+                        <div class="contact-info pt-4">
+                            <h5 class="text-dark mb-1">Привязанный проект</h5>
+                            <p class="text-dark font-weight-medium pt-4 mb-2">Название</p>
+                            <p>{{chain_store['project_name']}}</p>
+                            <p class="text-dark font-weight-medium pt-4 mb-2">ФИО Менеджера</p>
+                            <p>{{chain_store['project_manager_fio']}}</p>
+                            <p class="text-dark font-weight-medium pt-4 mb-2">Телефон Менеджера</p>
+                            <p>{{chain_store['project_manager_phone']}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-xl-9">
+                    <div class="profile-content-right py-5">
+                        <ul class="nav nav-tabs px-3 px-xl-5 nav-style-border" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="timeline-tab" data-toggle="tab" href="#timeline"
+                                    role="tab" aria-controls="timeline" aria-selected="true">Список магазинов</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab"
+                                    aria-controls="settings" aria-selected="false">Редактировать информацию</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content px-3 px-xl-5" id="myTabContent">
+                            <div class="tab-pane fade active show" id="timeline" role="tabpanel"
+                                aria-labelledby="timeline-tab">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="card card-table-border-none border-0" id="store-list">
+                                            <div class="card-body pt-0 pb-5">
+                                                <table class="table card-table table-responsive table-responsive-large"
+                                                    style="width:100%" id="store_table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Название</th>
+                                                            <th>Город</th>
+                                                            <th>Адрес</th>
+                                                            <th>Радиус</th>
+                                                            <th>Контакт</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {%for store in stores%}
+                                                        <tr id="{{store['_id']}}">
+                                                            <td>{{store['name']}}</td>
+                                                            <td>{{store['city']}}</td>
+                                                            <td>{{store['address']}}</td>
+                                                            <td>{{store['radius']}}</td>
+                                                            <td>{{store['contact']}}</td>
+
+                                                            <td class="text-right">
+                                                                <div
+                                                                    class="dropdown show d-inline-block widget-dropdown">
+                                                                    <a class="dropdown-toggle icon-burger-mini" href=""
+                                                                        role="button" id="dropdown-recent-order1"
+                                                                        data-toggle="dropdown" aria-haspopup="true"
+                                                                        aria-expanded="false" data-display="static"></a>
+                                                                    <ul class="dropdown-menu dropdown-menu-right"
+                                                                        aria-labelledby="dropdown-recent-order1">
+                                                                        <li class="dropdown-item">
+                                                                            <a onclick="updateStore({{store}})">Изменить</a>
+                                                                        </li>
+                                                                        <li class="dropdown-item">
+                                                                            <a
+                                                                                onclick="deleteStore('{{store['_id']}}')">Удалить</a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        {%endfor%}
+                                                    </tbody>
+                                                </table>
+                                                <div>
+                                                    <button type="button" class="btn btn-primary"
+                                                        data-toggle="modal" data-target="#exampleModalForm">
+                                                        Добавить магазин
+                                                    </button>
+                                                </div>
+                                                <!--Form modal 1-->
+                                                <div class="modal fade" id="exampleModalForm" tabindex="-1"
+                                                    role="dialog" aria-labelledby="exampleModalFormTitle"
+                                                    aria-hidden="true" style="display: none;">
+                                                    <div class="modal-dialog modal-lg" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalFormTitle">
+                                                                    Добавление магазина</h5>
+                                                                <button type="button" class="close" data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                    <span aria-hidden="true">×</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form method='POST' id="addStore_form">
+                                                                    <input type="text" class="form-control" hidden
+                                                                        name="status" value="add_store">
+                                                                    <div class="form-group">
+                                                                        <label for="name">Название магазина</label>
+                                                                        <input type="text" class="form-control"
+                                                                            name="name" placeholder="Введите название" autocomplete="off" autocomplete="chrome-off"  required>
+                                                                    </div>
+                                                                    
+                                                                    <input type="text" class="form-control" name="city" id="city" placeholder="Введите город" autocomplete="off" required hidden>
+
+                                                                    <!-- <div class="form-group">
+                                                                        <label for="address">Адрес</label>
+                                                                        <input type="text" class="form-control"
+                                                                            name="address" placeholder="Введите точный адрес" autocomplete="off" required>
+                                                                    </div> -->
+                                                                    <div class="form-group mb-5" id="leaflet_address">
+                                                                    <p class="mb-2 text-dark">Адрес</p>  
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label for="radius">Радиус, метры</label>
+                                                                        <input type="text" class="form-control"
+                                                                            name="radius" placeholder="Введите радиус" autocomplete="off" required>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label for="contact">Контакт (по желанию)</label>
+                                                                        <input type="text" class="form-control"
+                                                                            name="contact"
+                                                                            placeholder="Введите контакт" autocomplete="off">
+                                                                    </div>
+                                                                    
+                                                                    <div class="form-group">
+                                                                        <div class="mb-4" id="map"
+                                                                            style="height:70vh;width:100%;"></div>
+                                                                        <div class="d-none"><label
+                                                                                for="latitude">Latitude</label><input
+                                                                                type="text" class="form-control"
+                                                                                name="latitude" id="lat"
+                                                                                placeholder="Выберите точку на карте" required>
+                                                                        </div>
+                                                                        <div class="d-none"><label
+                                                                                for="longitude">Longitude</label><input
+                                                                                type="text" class="form-control"
+                                                                                name="longitude" id="lng"
+                                                                                placeholder="Выберите точку на карте" required>
+                                                                        </div>
+                                                                    </div>
+                                                                    <button type="submit"
+                                                                        class="btn btn-primary" id="btnSubmit">Добавить</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                                <div class="mt-5">
+                                    <form method='POST'>
+                                        <input type="text" class="form-control" hidden name="status"
+                                            value="update_chain_store">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Название</label>
+                                            <input type="text" class="form-control" name="name"
+                                                value="{{chain_store['name']}}">
+                                        </div>
+                                        <div class="form-group mb-4">
+                                            <label for="contact">Контакт</label>
+                                            <input type="text" class="form-control" name="contact"
+                                                value="{{chain_store['contact']}}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="project_id">Выберите проект</label>
+                                            <select class="form-control" id="project_id" name="project_id">
+                                                {%for project in projects%}
+                                                <option value={{project['_id']}} {%if
+                                                    project['_id']==chain_store['project_id']%}selected{%endif%}>
+                                                    {{project['name']}}</option>
+                                                {%endfor%}
+                                            </select>
+                                        </div>
+
+                                        <div class="d-flex justify-content-end mt-5">
+                                            <button type="submit" class="btn btn-primary mb-2 mr-2">Обновить
+                                                сеть</button>
+
+                                            <button onclick="deleteChainStore(`{{chain_store['_id']}}`)" class="btn btn-danger mb-2">Удалить
+                                                сеть</button>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'admin-end.html' %}
+<script src="{{ url('static', filename='plugins/leaflet/leaflet.js') }}"></script>
+<script src="{{ url('static', filename='plugins/leaflet/esri-leaflet.js') }}"></script>
+<script src="{{ url('static', filename='plugins/leaflet/esri-leaflet-geocoder.js') }}"></script>
+<script src="{{ url('static', filename='js/page/chain_store_page.js') }}"></script>
+</body>
+</html>

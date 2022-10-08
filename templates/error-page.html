@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Админ-панель</title>
+
+    <!-- GOOGLE FONTS -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Montserrat:400,500|Poppins:400,500,600,700|Roboto:400,500"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.materialdesignicons.com/4.4.95/css/materialdesignicons.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- PLUGINS CSS STYLE -->
+    <link
+      href="{{ url('static', filename='plugins/nprogress/nprogress.css') }}"
+      rel="stylesheet"
+    />
+
+    <!-- No Extra plugin used -->
+
+    <link
+      href="{{ url('static', filename='plugins/jvectormap/jquery-jvectormap-2.0.3.css') }}"
+      rel="stylesheet"
+    />
+
+    <link
+      href="{{ url('static', filename='plugins/daterangepicker/daterangepicker.css') }}"
+      rel="stylesheet"
+    />
+
+    <!-- SLEEK CSS -->
+    <link
+      id="sleek-css"
+      rel="stylesheet"
+      href="{{ url('static', filename='css/sleek.css') }}"
+    />
+
+    <!-- FAVICON -->
+    <link
+      href="{{ url('static', filename='img/favicon.png') }}"
+      rel="shortcut icon"
+    />
+
+    <script src="{{ url('static', filename='plugins/nprogress/nprogress.js') }}"></script>
+
+    <!-- DATATABLES-->
+    <link
+      href="{{ url('static', filename='plugins/data-tables/datatables.bootstrap4.min.css') }}"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="content-wrapper">
+      <div class="content">
+        <div class="error-wrapper rounded border bg-white px-5">
+          <div class="row justify-content-center">
+            <div class="col-xl-4">
+              <h1 class="text-primary bold error-title">{{status}}</h1>
+              <p class="pt-4 pb-5 error-subtitle">{{error}}</p>
+              <a href="/admin_profile_page" class="btn btn-primary">Перейти к профилю</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

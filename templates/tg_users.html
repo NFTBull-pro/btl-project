@@ -1,0 +1,142 @@
+{% include 'admin-layout.html' %}
+<div class="content-wrapper">
+    <div class="content">			
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-default">
+                    <div class="card-header card-header-border-bottom d-flex justify-content-between">
+                        <h2>Сотрудники</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="hoverable-data-table">
+                            <div id="hoverable-data-table_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+                                <table id="hoverable-data-table" class="table hover nowrap" style="width:100%;table-layout:fixed;">
+                                    <thead>
+                                     <tr>
+                                      <th>ФИО</th>
+                                      <th>Телефон</th>
+                                      <th style="width: 250px !important;">
+                                        <select class="form-control" id="filterProject">
+                                            <option value="">Проект</option>
+                                            {%for project in projects%}
+                                            <option>{{project['name']}}</option>
+                                            {%endfor%}
+                                        </select>
+                                      </th>
+                                      <th>
+                                        <select class="form-control" id="filterChain">
+                                            <option value="">Сеть</option>
+                                            {%for store in chain_store%}
+                                            <option>{{store['name']}}</option>
+                                            {%endfor%}
+                                        </select>
+                                      </th>
+                                      <th>
+                                        <select class="form-control" id="filterStore">
+                                            <option value="">Магазин</option>
+                                            {%for store in stores%}
+                                            <option>{{store['name']}}</option>
+                                            {%endfor%}
+                                        </select>
+                                      </th>
+                                      <th>
+                                        <select class="form-control" id="filterCity">
+                                            <option value="">Город</option>
+                                            {%for city in cites%}
+                                            <option>{{city}}</option>
+                                            {%endfor%}
+                                        </select>
+                                      </th>
+                                      <th></th>
+                                     </tr>
+                                    </thead>
+                                  
+                                    <tbody>
+                                        {%for tg_user in tg_users %}
+
+                                        {% if tg_user['status'] %}
+                                            <tr>
+                                        {% else %}
+                                            <tr class="bg-light"> 
+                                        {% endif %}
+         
+                                            <th onclick="window.open(window.location.href+'/{{tg_user['_id']}}', '_self')">{{tg_user['FIO']}}</th>
+                                            <th onclick="window.open(window.location.href+'/{{tg_user['_id']}}', '_self')">{{tg_user['phone']}}</th>
+                                            <th onclick="window.open(window.location.href+'/{{tg_user['_id']}}', '_self')" style="white-space: normal;">{{tg_user['project_name']}}</th>
+                                            <th onclick="window.open(window.location.href+'/{{tg_user['_id']}}', '_self')" style="white-space: normal;">{{tg_user['chain_store_name']}}</th>
+                                            <th onclick="window.open(window.location.href+'/{{tg_user['_id']}}', '_self')" style="white-space: normal;">{{tg_user['store_name']}}</th>
+                                            <th onclick="window.open(window.location.href+'/{{tg_user['_id']}}', '_self')">{{tg_user['city']}}</th>
+                                        
+                                            <th>
+                                                {%if 'chat_id' in tg_user %}
+                                                <button type="button" onclick="window.open(`/chat?tg_user_id={{tg_user['_id']}}`, '_self')" class="btn btn-light">Написать</button>
+                                                {%endif%}
+                                            </th>
+                                        </tr>
+
+                                         {%endfor%}
+                                    </tbody>
+                                   </table>
+
+                                   <div>
+                                    <button type="button" class="btn btn-primary" {% if projects|length == 0 %}disabled{%endif%} data-toggle="modal" data-target="#exampleModalForm">
+                                        Добавить сотрудника
+                                    </button>
+                                   </div>
+                                   <!--Form modal-->
+                                   <div class="modal fade" id="exampleModalForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalFormTitle" aria-hidden="true" style="display: none;">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalFormTitle">Добавление сотрудника</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form id="addTGUser_form" method="POST">
+                                                    <input type="text" class="form-control" hidden name="status" value="add_tg_user">        
+                                                    <div class="form-group">
+                                                        <label for="FIO">Имя</label>
+                                                        <input type="text" class="form-control" name="FIO" placeholder="Введите ФИО" required autocomplete="off">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="phone">Телефон</label>
+                                                        <input type="text" class="form-control" name="phone" placeholder="Введите телефон" required autocomplete="off">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="email">Email</label>
+                                                        <input type="email" class="form-control" name="email" placeholder="Введите email" required autocomplete="off">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="city">Город</label>
+                                                        <input type="text" class="form-control" name="city" placeholder="Введите город" required autocomplete="off">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="project_id">Выберите проект</label>
+                                                        <select class="form-control" multiple id="project_id" name ="project_id" required>
+                                                            {%for project in projects%}
+                                                            <option value={{project['_id']}}>{{project['name']}}</option>
+                                                            {%endfor%}
+                                                        </select>
+                                                    </div>
+                                                    
+                                                    <button type="submit" id="btnSubmit" class="btn btn-primary">Добавить</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'admin-end.html' %}
+<script src="{{ url('static', filename='js/page/tg_users.js') }}"></script>
+</body>
+</html>
